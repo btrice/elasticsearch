@@ -35,19 +35,21 @@ final class Natives {
     private static final Logger logger = LogManager.getLogger(Natives.class);
 
     // marker to determine if the JNA class files are available to the JVM
-    static final boolean JNA_AVAILABLE = false;
+    static final boolean JNA_AVAILABLE;
 
     static {
+        boolean v = false;
         try {
             // load one of the main JNA classes to see if the classes are available. this does not ensure that all native
             // libraries are available, only the ones necessary by JNA to function
             Class.forName("com.sun.jna.Native");
-            JNA_AVAILABLE = true;
+            v = true;
         } catch (ClassNotFoundException e) {
             logger.warn("JNA not found. native methods will be disabled.", e);
         } catch (UnsatisfiedLinkError e) {
             logger.warn("unable to load JNA native support library, native methods will be disabled.", e);
         }
+        JNA_AVAILABLE = v;
     }
 
     static void tryMlockall() {
